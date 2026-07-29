@@ -34,6 +34,7 @@ html/
   icons/                PWA icons
 nginx/default.conf      MIME types, gzip, cache headers
 tools/                  scripts that regenerate words.txt and the icons
+Dockerfile              copies the site into an nginx image
 ```
 
 ## Running
@@ -42,7 +43,7 @@ The container only exposes port 80 to the Docker network; publishing it is the
 reverse proxy's job (Dokploy in production).
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
 To reach it directly during local work, drop an untracked `docker-compose.override.yml`
@@ -91,3 +92,11 @@ python3 tools/make-icons.py
 Assets are served with a long cache lifetime, while `index.html` and `sw.js` are always
 revalidated. After changing any file under `html/`, bump `CACHE` in `html/sw.js` so
 installed clients pick the new version up.
+
+The site is **copied into the image**, not bind-mounted from the checkout. This is
+deliberate: a directory bind mount resolves to the host inode at container start, so when
+the deploy re-clones the repository the running container keeps pointing at the deleted
+tree and serves an empty root — nginx answers `403` for `/` and `404` for everything else,
+and only recreating the container fixes it. Building the files in means every deploy
+yields a new image and therefore a new container. Keep the deploy command as
+`docker compose up -d --build`, or the new content is never picked up.
