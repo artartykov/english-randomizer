@@ -211,7 +211,9 @@
     if (!current.length) {
       return;
     }
-    var text = current.join('\n');
+    // Trailing space before each newline: single-line targets (the browser
+    // address bar) strip newlines outright, so without it the words run together.
+    var text = current.join(' \n');
 
     writeToClipboard(text).then(function () {
       buzz(12);

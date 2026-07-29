@@ -1,5 +1,5 @@
 /* Service worker: keeps the app usable offline. Bump CACHE when assets change. */
-var CACHE = 'word-randomizer-v3';
+var CACHE = 'word-randomizer-v4';
 
 var PRECACHE = [
   './',
