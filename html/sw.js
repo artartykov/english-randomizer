@@ -1,5 +1,5 @@
 /* Service worker: keeps the app usable offline. Bump CACHE when assets change. */
-var CACHE = 'word-randomizer-v2';
+var CACHE = 'word-randomizer-v3';
 
 var PRECACHE = [
   './',
@@ -17,7 +17,14 @@ var PRECACHE = [
 self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
-      return cache.addAll(PRECACHE);
+      // `cache: 'reload'` keeps the browser's own HTTP cache out of the
+      // precache. Assets are served with a week-long lifetime, so a plain
+      // addAll() is allowed to satisfy itself from a copy cached before the
+      // deploy — filling the new cache with the old build, which then survives
+      // every reload because only a CACHE bump can dislodge it.
+      return cache.addAll(PRECACHE.map(function (url) {
+        return new Request(url, { cache: 'reload' });
+      }));
     }).then(function () {
       return self.skipWaiting();
     })
