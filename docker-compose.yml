@@ -5,4 +5,5 @@ services:
       - "80"
     volumes:
       - ./html:/usr/share/nginx/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
     restart: unless-stopped

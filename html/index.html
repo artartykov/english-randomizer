@@ -2,10 +2,62 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hello World</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Word Randomizer</title>
+  <meta name="description" content="Generate random English words instantly. Tap any word to reroll it, copy the whole set with one press.">
+
+  <meta name="theme-color" content="#f4f4f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e0e13" media="(prefers-color-scheme: dark)">
+  <meta name="color-scheme" content="dark light">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Words">
+
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon-64.png" sizes="64x64" type="image/png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Hello, World!</h1>
+  <div class="app">
+    <header class="header">
+      <h1 class="title">Word Randomizer</h1>
+      <p class="subtitle">Tap a word to swap it for a new one</p>
+    </header>
+
+    <section class="counter" aria-label="Number of words">
+      <span class="counter__label">Words</span>
+      <div class="counter__stepper">
+        <button type="button" class="stepper" id="decrease" aria-label="Fewer words">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg>
+        </button>
+        <span class="counter__value" id="count-value" aria-live="polite" aria-atomic="true">10</span>
+        <button type="button" class="stepper" id="increase" aria-label="More words">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <main class="board">
+      <ul class="words" id="words" aria-label="Generated words"></ul>
+      <p class="board__message" id="message" hidden></p>
+    </main>
+
+    <footer class="actions">
+      <button type="button" class="action action--ghost" id="copy">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11.5" height="11.5" rx="2.5"/><path d="M5.5 15H5A1.5 1.5 0 0 1 3.5 13.5V5A1.5 1.5 0 0 1 5 3.5h8.5A1.5 1.5 0 0 1 15 5v.5"/></svg>
+        <span>Copy</span>
+      </button>
+      <button type="button" class="action action--primary" id="regenerate">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 11a8.5 8.5 0 1 0-.9 4.5"/><path d="M20.5 4.5V11H14"/></svg>
+        <span>Regenerate</span>
+      </button>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
 </body>
 </html>

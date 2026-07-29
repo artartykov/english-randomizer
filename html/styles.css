@@ -1,0 +1,334 @@
+/* Word Randomizer — mobile-first styles. */
+
+:root {
+  --accent: #6366f1;
+  --accent-strong: #8b5cf6;
+
+  --bg: #0e0e13;
+  --bg-elevated: #17171f;
+  --surface: #1c1c27;
+  --surface-active: #262633;
+  --border: #2c2c3a;
+  --text: #f2f2f7;
+  --text-muted: #9494a8;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+  --radius: 16px;
+  --gap: 10px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f4f4f7;
+    --bg-elevated: #ffffff;
+    --surface: #ffffff;
+    --surface-active: #ececf3;
+    --border: #e0e0e9;
+    --text: #16161d;
+    --text-muted: #6b6b7d;
+    --shadow: 0 10px 30px rgba(20, 20, 40, 0.1);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  /* Stops iOS Safari from zooming in on a fast second tap. */
+  touch-action: manipulation;
+}
+
+svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Layout: header and counter stay put, only the word board scrolls. */
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: calc(var(--safe-top) + 20px) 16px 0;
+}
+
+.header {
+  flex: none;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background: linear-gradient(100deg, var(--accent), var(--accent-strong));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+/* Counter */
+.counter {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 8px 8px 8px 18px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.counter__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.counter__stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.counter__value {
+  min-width: 2.6ch;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stepper {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.stepper:active {
+  background: var(--surface-active);
+  transform: scale(0.94);
+}
+
+.stepper:disabled {
+  opacity: 0.35;
+  cursor: default;
+  transform: none;
+}
+
+/* Word board */
+.board {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 16px;
+  padding-bottom: 8px;
+}
+
+.words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.word {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 18px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 1rem;
+  font-weight: 500;
+  box-shadow: var(--shadow);
+  transition: transform 0.16s ease, opacity 0.16s ease, background-color 0.16s ease;
+}
+
+.word:active {
+  background: var(--surface-active);
+}
+
+/* Mid-swap: the old word shrinks away before the new one is written in. */
+.word.is-swapping {
+  transform: scale(0.82);
+  opacity: 0;
+}
+
+.word.is-fresh {
+  animation: pop-in 0.26s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+@keyframes pop-in {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+
+/* Placeholder chips shown while words.txt is still downloading. */
+.word--skeleton {
+  width: var(--skeleton-width, 92px);
+  box-shadow: none;
+  animation: pulse 1.3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.board__message {
+  margin: 24px 4px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Bottom action bar */
+.actions {
+  flex: none;
+  display: flex;
+  gap: 10px;
+  padding: 12px 0 calc(var(--safe-bottom) + 12px);
+  background: linear-gradient(to top, var(--bg) 62%, transparent);
+}
+
+.action {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: var(--radius);
+  font-size: 0.98rem;
+  font-weight: 600;
+  transition: transform 0.1s ease, filter 0.15s ease, background-color 0.15s ease;
+}
+
+.action:active {
+  transform: scale(0.97);
+}
+
+.action--primary {
+  color: #fff;
+  background: linear-gradient(120deg, var(--accent), var(--accent-strong));
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+}
+
+.action--primary:active {
+  filter: brightness(0.92);
+}
+
+.action--ghost {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+}
+
+.action--ghost:active {
+  background: var(--surface-active);
+}
+
+.action:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--safe-bottom) + 88px);
+  z-index: 10;
+  padding: 11px 20px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 0.88rem;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+/* Wider screens get roomier chips; the layout itself stays the same. */
+@media (min-width: 480px) {
+  .word {
+    min-height: 50px;
+    font-size: 1.05rem;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,16 @@
+# Local compose overrides (e.g. publishing a port for local work)
+docker-compose.override.yml
+
+# Python bytecode from tools/
+__pycache__/
+*.pyc
+
+# Editor and OS noise
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
