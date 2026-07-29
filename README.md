@@ -30,7 +30,7 @@ html/
   app.js                generation, swapping, copying, persistence
   sw.js                 service worker (offline cache)
   manifest.webmanifest  PWA manifest
-  words.txt             the dictionary — 6501 common English words
+  words.txt             the dictionary — 17386 uncommon English words
   icons/                PWA icons
 nginx/default.conf      MIME types, gzip, cache headers
 tools/                  scripts that regenerate words.txt and the icons
@@ -57,11 +57,19 @@ services:
 
 ## The dictionary
 
-`html/words.txt` holds 6501 words, 3 to 12 letters each. It is built by intersecting
-the [google-10000-english](https://github.com/first20hours/google-10000-english) frequency
-list with the [dwyl/english-words](https://github.com/dwyl/english-words) dictionary,
-matching on lowercase only. Because the second list keeps proper nouns capitalised, that
-match drops names, places and web jargon while keeping ordinary vocabulary.
+`html/words.txt` holds 17386 words, 4 to 14 letters each — deliberately uncommon ones,
+the kind an intermediate speaker is unlikely to recognise (*exculpate*, *maenad*,
+*apparatchik*, *woolgathering*).
+
+Two sources build it. [WordNet 3.0](https://wordnet.princeton.edu/) supplies the
+vocabulary: it is hand-curated, and its data files preserve canonical capitalisation, so
+keeping lowercase-only entries drops proper nouns. The
+[OpenSubtitles 2018 frequency list](https://github.com/hermitdave/FrequencyWords) then
+supplies each word's corpus occurrence count, and only a middle band survives — words
+common enough to be worth knowing, rare enough that most people don't. Both extremes go:
+everyday vocabulary above the band, taxonomy and pharmacology below it. Slurs are dropped
+using WordNet's own gloss labels, as are Roman numerals, redundant plurals and British
+`-ise` spellings that duplicate an `-ize` entry.
 
 Rebuild it with:
 
